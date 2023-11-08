@@ -7,7 +7,6 @@ import dev.andrej.tilegame.display.Display;
 import dev.andrej.tilegame.gfx.Assets;
 
 public class Game implements Runnable {
-
     private Display display;
     public int width, height;
     public String title;
@@ -54,7 +53,6 @@ public class Game implements Runnable {
     }
 
     public void run(){
-
         init();
 
         int fps = 60;
@@ -86,13 +84,14 @@ public class Game implements Runnable {
         }
 
         stop();
-
     }
 
     public synchronized void start(){
         if(running)
             return;
+
         running = true;
+
         thread = new Thread(this);
         thread.start();
     }
@@ -100,13 +99,13 @@ public class Game implements Runnable {
     public synchronized void stop(){
         if(!running)
             return;
+
         running = false;
+
         try {
             thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
-
 }
