@@ -5,9 +5,10 @@ import java.awt.image.BufferStrategy;
 
 import dev.andrej.tilegame.display.Display;
 import dev.andrej.tilegame.gfx.Assets;
+import dev.andrej.tilegame.states.GameState;
+import dev.andrej.tilegame.states.State;
 
 public class Game implements Runnable {
-
     private Display display;
     public int width, height;
     public String title;
@@ -18,6 +19,9 @@ public class Game implements Runnable {
     private BufferStrategy bs;
     private Graphics g;
 
+    //States
+    private State gameState;
+
     public Game(String title, int width, int height){
         this.width = width;
         this.height = height;
@@ -27,12 +31,15 @@ public class Game implements Runnable {
     private void init(){
         display = new Display(title, width, height);
         Assets.init();
+
+        gameState = new GameState();
+        State.setState(gameState);
     }
 
-    int x = 0;
-
     private void tick(){
-        x += 1;
+        if (State.getState() != null) {
+            State.getState().tick();
+        }
     }
 
     private void render(){
@@ -44,17 +51,16 @@ public class Game implements Runnable {
         g = bs.getDrawGraphics();
         //Clear Screen
         g.clearRect(0, 0, width, height);
-        //Draw Here!
 
-        g.drawImage(Assets.grass, x, 10, null);
+        if (State.getState() != null) {
+            State.getState().render(g);
+        }
 
-        //End Drawing!
         bs.show();
         g.dispose();
     }
 
     public void run(){
-
         init();
 
         int fps = 60;
@@ -86,13 +92,14 @@ public class Game implements Runnable {
         }
 
         stop();
-
     }
 
     public synchronized void start(){
         if(running)
             return;
+
         running = true;
+
         thread = new Thread(this);
         thread.start();
     }
@@ -100,13 +107,13 @@ public class Game implements Runnable {
     public synchronized void stop(){
         if(!running)
             return;
+
         running = false;
+
         try {
             thread.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
-
-
 }
