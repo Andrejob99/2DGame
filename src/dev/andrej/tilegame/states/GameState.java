@@ -3,6 +3,7 @@ package dev.andrej.tilegame.states;
 import dev.andrej.tilegame.Game;
 import dev.andrej.tilegame.entities.creatures.Player;
 import dev.andrej.tilegame.gfx.Assets;
+import dev.andrej.tilegame.tiles.Tile;
 
 import java.awt.*;
 
