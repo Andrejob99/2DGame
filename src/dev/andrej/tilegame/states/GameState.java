@@ -15,8 +15,8 @@ public class GameState extends State {
 
     public GameState(Game game) {
         super(game);
-        player = new Player(game, 100, 100);
-        world = new World("");
+        world = new World("res/worlds/world1.txt");
+        player = new Player(game, world.getSpawnX()*64, world.getSpawnY()*64);
     }
 
     @Override
