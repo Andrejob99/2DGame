@@ -1,5 +1,6 @@
 package dev.andrej.tilegame.entities.creatures;
 
+import dev.andrej.tilegame.Game;
 import dev.andrej.tilegame.entities.Entity;
 
 public abstract class Creature extends Entity {
@@ -14,8 +15,8 @@ public abstract class Creature extends Entity {
     public static final int DEFAULT_CREATURE_WIDTH = 64,
                             DEFAULT_CREATURE_HEIGHT = 64;
 
-    public Creature(float x, float y, int width, int height) {
-        super(x, y, width, height);
+    public Creature(Game game, float x, float y, int width, int height) {
+        super(game, x, y, width, height);
         hp = DEFAULT_HP;
         speed = DEFAULT_SPEED;
         xMove = 0;

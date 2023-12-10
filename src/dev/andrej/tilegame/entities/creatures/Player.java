@@ -7,40 +7,45 @@ import java.awt.*;
 
 public class Player extends Creature {
 
-    private Game game;
+    private float speedMultiplier;
 
     public Player(Game game, float x, float y) {
-        super(x, y, Creature.DEFAULT_CREATURE_WIDTH, Creature.DEFAULT_CREATURE_HEIGHT);
-        this.game = game;
+        super(game, x, y, Creature.DEFAULT_CREATURE_WIDTH, Creature.DEFAULT_CREATURE_HEIGHT);
     }
 
     @Override
     public void tick() {
         getInput();
         move();
+        game.getGameCamera().centerOnEntity(this);
     }
 
     private void getInput(){
         xMove = 0;
         yMove = 0;
 
+        speedMultiplier = 1;
+        if(game.getKeyManager().xKey){
+            speedMultiplier = 3;
+        }
+
         if(game.getKeyManager().up){
-            yMove = -speed;
+            yMove = -speed * speedMultiplier;
         }
         if(game.getKeyManager().down){
-            yMove = speed;
+            yMove = speed * speedMultiplier;
         }
         if(game.getKeyManager().left){
-            xMove = -speed;
+            xMove = -speed * speedMultiplier;
         }
         if(game.getKeyManager().right){
-            xMove = speed;
+            xMove = speed * speedMultiplier;
         }
 
     }
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.player, (int) x, (int) y, width, height, null);
+        g.drawImage(Assets.player, (int) (x - game.getGameCamera().getxOffset()), (int) (y - game.getGameCamera().getyOffset()), width, height, null);
     }
 }
