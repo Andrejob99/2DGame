@@ -5,6 +5,7 @@ import java.awt.image.BufferStrategy;
 
 import dev.andrej.tilegame.display.Display;
 import dev.andrej.tilegame.gfx.Assets;
+import dev.andrej.tilegame.gfx.GameCamera;
 import dev.andrej.tilegame.input.KeyManager;
 import dev.andrej.tilegame.states.GameState;
 import dev.andrej.tilegame.states.MenuState;
@@ -12,7 +13,7 @@ import dev.andrej.tilegame.states.State;
 
 public class Game implements Runnable {
     private Display display;
-    public int width, height;
+    private int width, height;
     public String title;
 
     private boolean running = false;
@@ -28,6 +29,9 @@ public class Game implements Runnable {
     //Input
     private KeyManager keyManager;
 
+    //Camera
+    private GameCamera gameCamera;
+
     public Game(String title, int width, int height){
         this.width = width;
         this.height = height;
@@ -39,6 +43,8 @@ public class Game implements Runnable {
         display = new Display(title, width, height);
         display.getFrame().addKeyListener(keyManager);
         Assets.init();
+
+        gameCamera = new GameCamera(this, 0,0);
 
         gameState = new GameState(this);
         menuState = new MenuState(this);
@@ -72,42 +78,86 @@ public class Game implements Runnable {
         g.dispose();
     }
 
-    public void run(){
+    public void run() {
         init();
 
-        int fps = 60;
-        double timePerTick = 1000000000 / fps;
-        double delta = 0;
-        long now;
-        long lastTime = System.nanoTime();
-        long timer = 0;
-        int ticks = 0;
+        //Constants
+        final int TARGET_FPS = 60;
+        final double TARGET_TIME_BETWEEN_UPDATES = 1000000000.0 / TARGET_FPS;
+        final int MAX_UPDATES_BEFORE_RENDER = 5;
 
-        while(running){
-            now = System.nanoTime();
-            delta += (now - lastTime) / timePerTick;
-            timer += now - lastTime;
-            lastTime = now;
+        double lastUpdateTime = System.nanoTime();
+        double lastRenderTime = System.nanoTime();
 
-            if(delta >= 1){
+        int frameCount = 0;
+        int tickCount = 0;
+
+        //Initialize timer
+        long timer = System.currentTimeMillis();
+
+        while (running) {
+            double now = System.nanoTime();
+            int updateCount = 0;
+
+            //tick as long as enough time has passed for the next update
+            while (now - lastUpdateTime > TARGET_TIME_BETWEEN_UPDATES && updateCount < MAX_UPDATES_BEFORE_RENDER) {
                 tick();
-                render();
-                ticks++;
-                delta--;
+                lastUpdateTime += TARGET_TIME_BETWEEN_UPDATES;
+                updateCount++;
+                tickCount++;
             }
 
-            if(timer >= 1000000000){
-                System.out.println("Ticks and Frames: " + ticks);
-                ticks = 0;
-                timer = 0;
+            if (now - lastUpdateTime > TARGET_TIME_BETWEEN_UPDATES) {
+                lastUpdateTime = now - TARGET_TIME_BETWEEN_UPDATES;
+            }
+
+            //render and increment the frame counter
+            render();
+            frameCount++;
+
+            double thisFrameTime = System.nanoTime();
+
+            //prevent full throttle until time for next frame has passed
+            while (thisFrameTime - lastRenderTime < 1000000000 / TARGET_FPS) {
+                //give hint to scheduler that processor can be used for other thread
+                Thread.yield();
+                try {
+                    //Reduce busy-waiting
+                    Thread.sleep(1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                thisFrameTime = System.nanoTime();
+            }
+
+            lastRenderTime = thisFrameTime;
+
+            if (System.currentTimeMillis() - timer > 1000) {
+                timer += 1000;
+                System.out.println("Ticks: " + tickCount + ", Frames: " + frameCount);
+                tickCount = 0;
+                frameCount = 0;
             }
         }
 
         stop();
     }
 
+
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
+    }
+
     public KeyManager getKeyManager(){
         return keyManager;
+    }
+
+    public GameCamera getGameCamera(){
+        return gameCamera;
     }
 
     public synchronized void start(){

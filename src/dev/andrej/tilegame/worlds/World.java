@@ -1,17 +1,26 @@
 package dev.andrej.tilegame.worlds;
 
-import dev.andrej.tilegame.tiles.Tile;
+import dev.andrej.tilegame.Game;
+import dev.andrej.tilegame.tiles.*;
 import dev.andrej.tilegame.utils.Utils;
 
 import java.awt.*;
 
 public class World {
 
+    //Initialize Tiles
+    public static Tile dirtTile = new DirtTile(0);
+    public static Tile grassTile = new GrassTile(1);
+    public static Tile rockTile = new RockTile(2);
+    public static Tile treeTile = new TreeTile(3);
+
+    private Game game;
     private int width, height;
     private int spawnX, spawnY;
-    private int[][] tiles;
+    private int[][] worldTiles;
 
-    public World(String path) {
+    public World(Game game, String path) {
+        this.game = game;
         loadWorld(path);
     }
 
@@ -20,17 +29,25 @@ public class World {
     }
 
     public void render(Graphics g) {
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                getTile(x, y).render(g, x * Tile.TILEWIDTH, y * Tile.TILEHEIGHT);
+        //Efficient rendering, only render what you can see
+        int xStart = (int) Math.max(0, game.getGameCamera().getxOffset() / Tile.TILEWIDTH);
+        int xEnd = (int) Math.min(width, (game.getGameCamera().getxOffset() + game.getWidth()) / Tile.TILEWIDTH + 1);
+        int yStart = (int) Math.max(0, game.getGameCamera().getyOffset() / Tile.TILEHEIGHT);
+        int yEnd = (int) Math.min(height, (game.getGameCamera().getyOffset() + game.getHeight()) / Tile.TILEHEIGHT + 1);
+
+        //Tile render loop
+        for (int y = yStart; y < yEnd; y++) {
+            for (int x = xStart; x < xEnd; x++) {
+                getTile(x, y).render(g, (int) (x * Tile.TILEWIDTH - game.getGameCamera().getxOffset()),
+                        (int) (y * Tile.TILEHEIGHT - game.getGameCamera().getyOffset()));
             }
         }
     }
 
     public Tile getTile(int x, int y) {
-        Tile t = Tile.tiles[tiles[x][y]];
+        Tile t = Tile.tiles[worldTiles[x][y]];
         if (t == null) {
-            return Tile.dirtTile;
+            return dirtTile;
         }
 
         return t;
@@ -44,11 +61,11 @@ public class World {
         spawnX = Utils.parseInt(tokens[2]);
         spawnY = Utils.parseInt(tokens[3]);
 
-        tiles = new int[width][height];
+        worldTiles = new int[width][height];
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                tiles[x][y] = Utils.parseInt(tokens[4 + x + y * width]);
+                worldTiles[x][y] = Utils.parseInt(tokens[4 + x + y * width]);
             }
         }
     }
