@@ -1,7 +1,9 @@
 package dev.andrej.tilegame.entities.creatures;
 
 import dev.andrej.tilegame.Game;
+import dev.andrej.tilegame.Handler;
 import dev.andrej.tilegame.entities.Entity;
+import dev.andrej.tilegame.tiles.Tile;
 
 public abstract class Creature extends Entity {
 
@@ -15,20 +17,85 @@ public abstract class Creature extends Entity {
     public static final int DEFAULT_CREATURE_WIDTH = 64,
                             DEFAULT_CREATURE_HEIGHT = 64;
 
-    public Creature(Game game, float x, float y, int width, int height) {
-        super(game, x, y, width, height);
+    public Creature(Handler handler, float x, float y, int width, int height) {
+        super(handler, x, y, width, height);
         hp = DEFAULT_HP;
         speed = DEFAULT_SPEED;
         xMove = 0;
         yMove = 0;
     }
 
-    public void move(){
-        x += xMove;
-        y += yMove;
+    public void move() {
+        moveX();
+        moveY();
     }
 
+    public void moveX() {
+        //Moving right
+        if (xMove > 0) {
+            int tx = (int) (x + xMove + bounds.x + bounds.width) / Tile.TILEWIDTH;
 
+            if (!collisionWithTile(tx, (int) (y + bounds.y) / Tile.TILEHEIGHT) &&
+                    !collisionWithTile(tx, (int) (y + bounds.y + bounds.height) / Tile.TILEHEIGHT)) {
+                x += xMove;
+            }
+
+            else {
+                x = tx * Tile.TILEWIDTH - bounds.x - bounds.width - 1;
+            }
+        }
+
+        //Moving left
+        else if (xMove < 0) {
+            int tx = (int) (x + xMove + bounds.x) / Tile.TILEWIDTH;
+
+            if(!collisionWithTile(tx, (int) (y + bounds.y) / Tile.TILEHEIGHT) &&
+                    !collisionWithTile(tx, (int) (y + bounds.y + bounds.height) / Tile.TILEHEIGHT)) {
+                x += xMove;
+            }
+
+            else {
+                x = tx * Tile.TILEWIDTH + bounds.x + bounds.width;
+            }
+        }
+    }
+
+    public void moveY() {
+        //Moving up
+        if (yMove < 0) {
+            int ty = (int) (y + yMove + bounds.y) / Tile.TILEHEIGHT;
+
+            if (!collisionWithTile((int) (x + bounds.x) / Tile.TILEWIDTH, ty) &&
+                    !collisionWithTile((int) (x + bounds.x + bounds.width) / Tile.TILEWIDTH, ty)) {
+                y += yMove;
+            }
+
+            else {
+                y = ty * Tile.TILEHEIGHT + Tile.TILEHEIGHT - bounds.y;
+            }
+
+        }
+
+        //Moving down
+        else if (yMove > 0) {
+            int ty = (int) (y + yMove + bounds.y + bounds.height) / Tile.TILEHEIGHT;
+
+            if (!collisionWithTile((int) (x + bounds.x) / Tile.TILEWIDTH, ty) &&
+                    !collisionWithTile((int) (x + bounds.x + bounds.width) / Tile.TILEWIDTH, ty)) {
+                y += yMove;
+            }
+
+            else {
+                y = ty * Tile.TILEHEIGHT - bounds.y - bounds.height - 1;
+            }
+
+        }
+
+    }
+
+    protected boolean collisionWithTile(int x, int y) {
+        return handler.getWorld().getTile(x, y).isSolid();
+    }
 
     public float getxMove() {
         return xMove;

@@ -1,6 +1,7 @@
 package dev.andrej.tilegame.states;
 
 import dev.andrej.tilegame.Game;
+import dev.andrej.tilegame.Handler;
 
 import java.awt.*;
 
@@ -18,10 +19,10 @@ public abstract class State {
 
     //CLASS
 
-    protected Game game;
+    protected Handler handler;
 
-    public State(Game game){
-        this.game = game;
+    public State(Handler handler){
+        this.handler = handler;
     }
 
     public abstract void tick();

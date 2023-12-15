@@ -1,6 +1,7 @@
 package dev.andrej.tilegame.states;
 
 import dev.andrej.tilegame.Game;
+import dev.andrej.tilegame.Handler;
 import dev.andrej.tilegame.Launcher;
 import dev.andrej.tilegame.display.Display;
 import dev.andrej.tilegame.gfx.Assets;
@@ -9,8 +10,8 @@ import java.awt.*;
 
 public class MenuState extends State {
 
-    public MenuState(Game game) {
-        super(game);
+    public MenuState(Handler handler) {
+        super(handler);
     }
 
     @Override
