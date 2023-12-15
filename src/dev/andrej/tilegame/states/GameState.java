@@ -1,6 +1,7 @@
 package dev.andrej.tilegame.states;
 
 import dev.andrej.tilegame.Game;
+import dev.andrej.tilegame.Handler;
 import dev.andrej.tilegame.entities.creatures.Player;
 import dev.andrej.tilegame.gfx.Assets;
 import dev.andrej.tilegame.tiles.Tile;
@@ -13,10 +14,11 @@ public class GameState extends State {
     private Player player;
     private World world;
 
-    public GameState(Game game) {
-        super(game);
-        world = new World(game,"res/worlds/world1.txt");
-        player = new Player(game,world.getSpawnX()*64,world.getSpawnY()*64);
+    public GameState(Handler handler) {
+        super(handler);
+        world = new World(handler,"res/worlds/world1.txt");
+        handler.setWorld(world);
+        player = new Player(handler,world.getSpawnX()*64,world.getSpawnY()*64);
     }
 
     @Override
