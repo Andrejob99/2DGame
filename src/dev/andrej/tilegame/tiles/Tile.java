@@ -8,10 +8,6 @@ import java.awt.image.BufferedImage;
 public class Tile {
 
     public static Tile[] tiles = new Tile[256];
-    public static Tile dirtTile = new DirtTile(0);
-    public static Tile grassTile = new GrassTile(1);
-    public static Tile rockTile = new RockTile(2);
-    public static Tile treeTile = new TreeTile(3);
 
     public static final int TILEWIDTH = 64,
                             TILEHEIGHT = 64;
@@ -23,6 +19,7 @@ public class Tile {
         this.texture = texture;
         this.id = id;
 
+        //When generating a specific tile, the array gets an entry of the tile at the field with the key "id"
         tiles[id] = this;
     }
 
