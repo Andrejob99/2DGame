@@ -2,12 +2,19 @@ package dev.andrej.tilegame.entities.creatures;
 
 import dev.andrej.tilegame.Game;
 import dev.andrej.tilegame.Handler;
+import dev.andrej.tilegame.gfx.Animation;
 import dev.andrej.tilegame.gfx.Assets;
 import dev.andrej.tilegame.tiles.Tile;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Player extends Creature {
+
+    //Animations
+    private Animation up, down, left, right;
+    private Animation[] directions;
+    private int index;
 
     private float speedMultiplier;
 
@@ -18,10 +25,22 @@ public class Player extends Creature {
         bounds.y = 96;
         bounds.width = 32;
         bounds.height = 32;
+
+        //Animations
+        up = new Animation(250, Assets.upSprites);
+        down = new Animation(250, Assets.downSprites);
+        left = new Animation(250, Assets.leftSprites);
+        right = new Animation(250, Assets.rightSprites);
+
+        directions = new Animation[]{up, down, left, right};
+
+        index = 1;
     }
 
     @Override
     public void tick() {
+        directions[index].tick();
+
         getInput();
         move();
         handler.getGameCamera().centerOnEntity(this);
@@ -118,11 +137,34 @@ public class Player extends Creature {
 
     @Override
     public void render(Graphics g) {
-        g.drawImage(Assets.playerDown0, (int) (x - handler.getGameCamera().getxOffset()), (int) (y - handler.getGameCamera().getyOffset()), width * 2, height * 2, null);
+        g.drawImage(getCurrentAnimationFrame(), (int) (x - handler.getGameCamera().getxOffset()), (int) (y - handler.getGameCamera().getyOffset()), width * 2, height * 2, null);
 
+        /*
         g.setColor(Color.red);
         g.fillRect((int) (x + bounds.x - handler.getGameCamera().getxOffset()),
                 (int) (y + bounds.y - handler.getGameCamera().getyOffset()),
                 bounds.width, bounds.height);
+                */
+
+    }
+
+    private BufferedImage getCurrentAnimationFrame(){
+        if(yMove < 0){
+            index = 0;
+            return up.getCurrentFrame();
+        } else if(yMove > 0){
+            index = 1;
+            return down.getCurrentFrame();
+        } else if(xMove < 0){
+            index = 2;
+            return left.getCurrentFrame();
+        } else if(xMove > 0) {
+            index = 3;
+            return right.getCurrentFrame();
+        } else {
+            //stand
+            directions[index].resetAnimation();
+            return directions[index].getCurrentFrame();
+        }
     }
 }
