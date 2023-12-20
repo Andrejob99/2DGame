@@ -15,6 +15,7 @@ public class Player extends Creature {
     private Animation up, down, left, right;
     private Animation[] directions;
     private int index;
+    private boolean fast;
 
     private float speedMultiplier;
 
@@ -27,19 +28,21 @@ public class Player extends Creature {
         bounds.height = 32;
 
         //Animations
-        up = new Animation(250, Assets.upSprites);
-        down = new Animation(250, Assets.downSprites);
-        left = new Animation(250, Assets.leftSprites);
-        right = new Animation(250, Assets.rightSprites);
+        up = new Animation(200, Assets.upSprites);
+        down = new Animation(200, Assets.downSprites);
+        left = new Animation(200, Assets.leftSprites);
+        right = new Animation(200, Assets.rightSprites);
 
         directions = new Animation[]{up, down, left, right};
 
         index = 1;
+
+        fast = false;
     }
 
     @Override
     public void tick() {
-        directions[index].tick();
+        directions[index].tick(fast);
 
         getInput();
         move();
@@ -53,6 +56,9 @@ public class Player extends Creature {
         speedMultiplier = 1;
         if(handler.getKeyManager().xKey){
             speedMultiplier = 3;
+            fast = true;
+        } else {
+            fast = false;
         }
 
         if(handler.getKeyManager().up){
