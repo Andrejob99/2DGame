@@ -14,7 +14,10 @@ public class Player extends Creature {
     //Animations
     private Animation up, down, left, right;
     private Animation[] directions;
-    private int index;
+    private int animationIndex;
+    private int animationPriority;
+    private int priorityCounter;
+    private boolean fast;
 
     private float speedMultiplier;
 
@@ -27,19 +30,22 @@ public class Player extends Creature {
         bounds.height = 32;
 
         //Animations
-        up = new Animation(250, Assets.upSprites);
-        down = new Animation(250, Assets.downSprites);
-        left = new Animation(250, Assets.leftSprites);
-        right = new Animation(250, Assets.rightSprites);
+        up = new Animation(200, Assets.upSprites);
+        down = new Animation(200, Assets.downSprites);
+        left = new Animation(200, Assets.leftSprites);
+        right = new Animation(200, Assets.rightSprites);
 
         directions = new Animation[]{up, down, left, right};
 
-        index = 1;
+        animationIndex = 1;
+        animationPriority = 1;
+
+        fast = false;
     }
 
     @Override
     public void tick() {
-        directions[index].tick();
+        directions[animationIndex].tick(fast);
 
         getInput();
         move();
@@ -53,19 +59,28 @@ public class Player extends Creature {
         speedMultiplier = 1;
         if(handler.getKeyManager().xKey){
             speedMultiplier = 3;
+            fast = true;
+        } else {
+            fast = false;
         }
+
+        priorityCounter = 0;
 
         if(handler.getKeyManager().up){
             yMove = -speed * speedMultiplier;
+            priorityCounter++;
         }
         if(handler.getKeyManager().down){
             yMove = speed * speedMultiplier;
+            priorityCounter++;
         }
         if(handler.getKeyManager().left){
             xMove = -speed * speedMultiplier;
+            priorityCounter++;
         }
         if(handler.getKeyManager().right){
             xMove = speed * speedMultiplier;
+            priorityCounter++;
         }
 
     }
@@ -138,33 +153,47 @@ public class Player extends Creature {
     @Override
     public void render(Graphics g) {
         g.drawImage(getCurrentAnimationFrame(), (int) (x - handler.getGameCamera().getxOffset()), (int) (y - handler.getGameCamera().getyOffset()), width * 2, height * 2, null);
-
-        /*
-        g.setColor(Color.red);
-        g.fillRect((int) (x + bounds.x - handler.getGameCamera().getxOffset()),
-                (int) (y + bounds.y - handler.getGameCamera().getyOffset()),
-                bounds.width, bounds.height);
-                */
-
     }
 
     private BufferedImage getCurrentAnimationFrame(){
+        if(priorityCounter < 3 && xMove != 0 && yMove != 0){
+            return directions[animationPriority].getCurrentFrame();
+        }
+
         if(yMove < 0){
-            index = 0;
+            //turn north
+            animationIndex = 0;
+            if (xMove == 0) {
+                animationPriority = animationIndex;
+            }
+
             return up.getCurrentFrame();
         } else if(yMove > 0){
-            index = 1;
+            //turn south
+            animationIndex = 1;
+            if (xMove == 0) {
+                animationPriority = animationIndex;
+            }
+
             return down.getCurrentFrame();
         } else if(xMove < 0){
-            index = 2;
+            //turn west
+            animationIndex = 2;
+            animationPriority = animationIndex;
+
             return left.getCurrentFrame();
         } else if(xMove > 0) {
-            index = 3;
+            //turn east
+            animationIndex = 3;
+            animationPriority = animationIndex;
+
             return right.getCurrentFrame();
         } else {
             //stand
-            directions[index].resetAnimation();
-            return directions[index].getCurrentFrame();
+            animationPriority = animationIndex;
+            directions[animationIndex].resetAnimation();
+
+            return directions[animationIndex].getCurrentFrame();
         }
     }
 }

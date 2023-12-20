@@ -15,12 +15,15 @@ public class Animation {
         lastTime = System.currentTimeMillis();
     }
 
-    public void tick(){
+    public void tick(boolean fast){
         timer += System.currentTimeMillis() - lastTime;
         lastTime = System.currentTimeMillis();
 
-        if(timer > speed){
-            index = (index+1)%3;
+        if (fast && timer > speed/3) {
+            index = (index+1) % 4;
+            timer = 0;
+        } else if (timer > speed) {
+            index = (index+1) % 4;
             timer = 0;
         }
     }
