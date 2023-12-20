@@ -36,10 +36,10 @@ public class Assets {
         playerRight1 = playerSheet.crop(playerWidth, playerHeight * 3, playerWidth, playerHeight);
         playerRight2 = playerSheet.crop(playerWidth * 2, playerHeight * 3, playerWidth, playerHeight);
 
-        upSprites = new BufferedImage[]{playerUp0, playerUp1, playerUp2};
-        downSprites = new BufferedImage[]{playerDown0, playerDown1, playerDown2};
-        leftSprites = new BufferedImage[]{playerLeft0, playerLeft1, playerLeft2};
-        rightSprites = new BufferedImage[]{playerRight0, playerRight1, playerRight2};
+        upSprites = new BufferedImage[]{playerUp0, playerUp1, playerUp0, playerUp2};
+        downSprites = new BufferedImage[]{playerDown0, playerDown1, playerDown0, playerDown2};
+        leftSprites = new BufferedImage[]{playerLeft0, playerLeft1, playerLeft0, playerLeft2};
+        rightSprites = new BufferedImage[]{playerRight0, playerRight1, playerRight0, playerRight2};
 
         dirt = sheet.crop(width, 0, width, height);
         grass = sheet.crop(width * 2, 0, width, height);

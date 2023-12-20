@@ -20,10 +20,10 @@ public class Animation {
         lastTime = System.currentTimeMillis();
 
         if (fast && timer > speed/3) {
-            index = (index+1) % 3;
+            index = (index+1) % 4;
             timer = 0;
         } else if (timer > speed) {
-            index = (index+1) % 3;
+            index = (index+1) % 4;
             timer = 0;
         }
     }
