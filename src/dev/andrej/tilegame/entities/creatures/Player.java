@@ -156,24 +156,30 @@ public class Player extends Creature {
     }
 
     private BufferedImage getCurrentAnimationFrame(){
-        if(priorityCounter < 3 && xMove != 0 && yMove != 0){
+        if (priorityCounter > 2){
+            switch (animationPriority) {
+                case 0 -> animationPriority = 1;
+                case 1 -> animationPriority = 0;
+                case 2 -> animationPriority = 3;
+                case 3 -> animationPriority = 2;
+            }
+            return directions[animationPriority].getCurrentFrame();
+        }
+
+        if(xMove != 0 && yMove != 0){
             return directions[animationPriority].getCurrentFrame();
         }
 
         if(yMove < 0){
             //turn north
             animationIndex = 0;
-            if (xMove == 0) {
-                animationPriority = animationIndex;
-            }
+            animationPriority = animationIndex;
 
             return up.getCurrentFrame();
         } else if(yMove > 0){
             //turn south
             animationIndex = 1;
-            if (xMove == 0) {
-                animationPriority = animationIndex;
-            }
+            animationPriority = animationIndex;
 
             return down.getCurrentFrame();
         } else if(xMove < 0){
