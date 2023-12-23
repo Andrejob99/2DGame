@@ -1,6 +1,9 @@
 package dev.andrej.tilegame.worlds;
 
 import dev.andrej.tilegame.Handler;
+import dev.andrej.tilegame.entities.EntityManager;
+import dev.andrej.tilegame.entities.creatures.Player;
+import dev.andrej.tilegame.entities.creatures.statics.Tree;
 import dev.andrej.tilegame.tiles.*;
 import dev.andrej.tilegame.utils.Utils;
 
@@ -18,14 +21,24 @@ public class World {
     private int width, height;
     private int spawnX, spawnY;
     private int[][] worldTiles;
+    //Entities
+    private EntityManager entityManager;
 
     public World(Handler handler, String path) {
         this.handler = handler;
+        entityManager = new EntityManager(handler, new Player(handler, 100, 100));
+        entityManager.addEntity(new Tree(handler, 100, 200));
+        entityManager.addEntity(new Tree(handler, 100, 300));
+        entityManager.addEntity(new Tree(handler, 100, 400));
+
         loadWorld(path);
+
+        entityManager.getPlayer().setX(spawnX);
+        entityManager.getPlayer().setY(spawnY);
     }
 
     public void tick() {
-
+        entityManager.tick();
     }
 
     public void render(Graphics g) {
@@ -42,6 +55,8 @@ public class World {
                         (int) (y * Tile.TILEHEIGHT - handler.getGameCamera().getyOffset()));
             }
         }
+        //Entity render loop
+        entityManager.render(g);
     }
 
     public Tile getTile(int x, int y) {
