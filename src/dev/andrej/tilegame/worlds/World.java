@@ -26,19 +26,23 @@ public class World {
 
     public World(Handler handler, String path) {
         this.handler = handler;
-        entityManager = new EntityManager(handler, new Player(handler, 100, 100));
+        entityManager = new EntityManager(handler, new Player(handler, 0, 0));
         entityManager.addEntity(new Tree(handler, 100, 200));
         entityManager.addEntity(new Tree(handler, 100, 300));
         entityManager.addEntity(new Tree(handler, 100, 400));
 
         loadWorld(path);
 
-        entityManager.getPlayer().setX(spawnX);
-        entityManager.getPlayer().setY(spawnY);
+        entityManager.getPlayer().setX(spawnX*64);
+        entityManager.getPlayer().setY(spawnY*64);
     }
 
     public void tick() {
         entityManager.tick();
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
     }
 
     public void render(Graphics g) {
