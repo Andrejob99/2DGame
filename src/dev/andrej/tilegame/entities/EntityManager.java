@@ -5,12 +5,22 @@ import dev.andrej.tilegame.entities.creatures.Player;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class EntityManager {
 
     private Handler handler;
     private Player player;
     private ArrayList<Entity> entities;
+    private Comparator<Entity> renderOrder = new Comparator<Entity>(){
+        @Override
+        public int compare(Entity a, Entity b) {
+            if (a.getY() < b.getY()){
+                return -1;
+            }
+            return 1;
+        }
+    };
 
     public EntityManager(Handler handler, Player player){
         this.handler = handler;
@@ -24,6 +34,7 @@ public class EntityManager {
             Entity e = entities.get(i);
             e.tick();
         }
+        entities.sort(renderOrder);
     }
 
     public void render(Graphics g){
