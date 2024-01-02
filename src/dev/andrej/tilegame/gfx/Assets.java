@@ -4,6 +4,14 @@ import java.awt.image.BufferedImage;
 
 public class Assets {
 
+    //Menu sprites
+    public static final int menuButtonWidth = 128,
+                             menuButtonHeight = 64;
+
+    public static BufferedImage menuStart0, menuStart1;
+
+    public static BufferedImage[] menuSprites;
+
     //Player sprites
     private static final int playerWidth = 64,
                              playerHeight = 64;
@@ -14,8 +22,8 @@ public class Assets {
     public static BufferedImage[] upSprites, downSprites, leftSprites, rightSprites;
 
     //Tile sprites
-    private static final int width = 32,
-                             height = 32;
+    private static final int tileWidth = 32,
+                             tileHeight = 32;
 
     public static BufferedImage dirt, grass, rock, tree;
 
@@ -23,6 +31,13 @@ public class Assets {
         SpriteSheet playerSheet = new SpriteSheet(ImageLoader.loadImage("/textures/playerSheet.png"));
         SpriteSheet sheet = new SpriteSheet(ImageLoader.loadImage("/textures/sheet.png"));
 
+        //Menu
+        menuStart0 = sheet.crop(menuButtonWidth, 0, menuButtonWidth, menuButtonHeight);
+        menuStart1 = sheet.crop(menuButtonWidth, menuButtonHeight, menuButtonWidth, menuButtonHeight);
+
+        menuSprites = new BufferedImage[]{menuStart0, menuStart1};
+
+        //Player
         playerUp0 = playerSheet.crop(0, 0, playerWidth, playerHeight);
         playerUp1 = playerSheet.crop(playerWidth, 0, playerWidth, playerHeight);
         playerUp2 = playerSheet.crop(playerWidth * 2, 0, playerWidth, playerHeight);
@@ -41,10 +56,11 @@ public class Assets {
         leftSprites = new BufferedImage[]{playerLeft0, playerLeft1, playerLeft0, playerLeft2};
         rightSprites = new BufferedImage[]{playerRight0, playerRight1, playerRight0, playerRight2};
 
-        dirt = sheet.crop(width, 0, width, height);
-        grass = sheet.crop(width * 2, 0, width, height);
-        rock = sheet.crop(width * 3, 0, width, height);
-        tree = sheet.crop(0, height, width, height);
+        //Tiles
+        dirt = sheet.crop(tileWidth, 0, tileWidth, tileHeight);
+        grass = sheet.crop(tileWidth * 2, 0, tileWidth, tileHeight);
+        rock = sheet.crop(tileWidth * 3, 0, tileWidth, tileHeight);
+        tree = sheet.crop(0, tileHeight, tileWidth, tileHeight);
     }
 
 }
