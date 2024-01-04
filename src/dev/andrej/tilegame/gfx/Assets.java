@@ -27,6 +27,9 @@ public class Assets {
 
     public static BufferedImage dirt, grass, rock, tree;
 
+    //Damage sprites
+    public static BufferedImage cross;
+
     public static void init(){
         SpriteSheet playerSheet = new SpriteSheet(ImageLoader.loadImage("/textures/playerSheet.png"));
         SpriteSheet sheet = new SpriteSheet(ImageLoader.loadImage("/textures/sheet.png"));
@@ -61,6 +64,8 @@ public class Assets {
         grass = sheet.crop(tileWidth * 2, 0, tileWidth, tileHeight);
         rock = sheet.crop(tileWidth * 3, 0, tileWidth, tileHeight);
         tree = sheet.crop(0, tileHeight, tileWidth, tileHeight);
-    }
 
+        //Damage
+        cross = sheet.crop(tileWidth, tileHeight * 2, tileWidth, tileHeight);
+    }
 }

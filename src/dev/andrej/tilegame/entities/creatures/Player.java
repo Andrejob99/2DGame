@@ -22,7 +22,7 @@ public class Player extends Creature {
 
     //Attack
     private long lastAttackTime = System.currentTimeMillis();
-    private long attackCooldown = 1000;
+    private long attackCooldown = 500;
 
     private float speedMultiplier;
 
@@ -91,7 +91,7 @@ public class Player extends Creature {
             if(e.equals(this))
                 continue;
             if(e.getCollisionBounds(0,0).intersects(attackBox)){
-                e.takeDamage(1);
+                e.takeDamage(4);
                 lastAttackTime = currentTime;
                 System.out.println("Chop chop");
                 return;

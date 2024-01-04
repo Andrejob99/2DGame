@@ -14,6 +14,7 @@ public abstract class Entity {
     protected int health;
     protected boolean active;
     protected Rectangle bounds;
+    protected long damageTimestamp;
 
     public Entity(Handler handler, float x, float y, int width, int height){
         this.handler = handler;
@@ -23,6 +24,7 @@ public abstract class Entity {
         this.height = height;
         this.health = DEFAULT_HEALTH;
         this.active = true;
+        this.damageTimestamp = System.currentTimeMillis() - 1000;
 
         bounds = new Rectangle(0,0,width, height);
     }
@@ -38,6 +40,9 @@ public abstract class Entity {
         if (health <= 0){
             active = false;
             die();
+        }
+        else {
+            damageTimestamp = System.currentTimeMillis();
         }
     }
 
