@@ -25,7 +25,7 @@ public class Assets {
     private static final int tileWidth = 32,
                              tileHeight = 32;
 
-    public static BufferedImage dirt, grass, rock, tree;
+    public static BufferedImage dirt, grass, rock, tree, wood, pebble;
 
     //Damage sprites
     public static BufferedImage cross;
@@ -67,5 +67,9 @@ public class Assets {
 
         //Damage
         cross = sheet.crop(tileWidth, tileHeight * 2, tileWidth, tileHeight);
+
+        //Drops
+        wood = sheet.crop(tileWidth, tileHeight * 3, tileWidth, tileHeight);
+        pebble = sheet.crop(tileWidth, tileHeight * 3, tileWidth * 2, tileHeight);
     }
 }
