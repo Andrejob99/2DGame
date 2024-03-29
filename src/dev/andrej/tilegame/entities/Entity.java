@@ -7,10 +7,14 @@ import java.awt.*;
 
 public abstract class Entity {
 
+    public static final int DEFAULT_HEALTH = 10;
     protected Handler handler;
     protected float x, y;
     protected int width, height;
+    protected int health;
+    protected boolean active;
     protected Rectangle bounds;
+    protected long damageTimestamp;
 
     public Entity(Handler handler, float x, float y, int width, int height){
         this.handler = handler;
@@ -18,6 +22,9 @@ public abstract class Entity {
         this.y = y;
         this.width = width;
         this.height = height;
+        this.health = DEFAULT_HEALTH;
+        this.active = true;
+        this.damageTimestamp = System.currentTimeMillis() - 1000;
 
         bounds = new Rectangle(0,0,width, height);
     }
@@ -25,6 +32,19 @@ public abstract class Entity {
     public abstract void tick();
 
     public abstract void render(Graphics g);
+
+    public abstract void die();
+
+    public void takeDamage(int amt){
+        health -= amt;
+        if (health <= 0){
+            active = false;
+            die();
+        }
+        else {
+            damageTimestamp = System.currentTimeMillis();
+        }
+    }
 
     public boolean checkEntityCollisions(float xOffset, float yOffset) {
         for(Entity e : handler.getWorld().getEntityManager().getEntities()) {
@@ -71,5 +91,9 @@ public abstract class Entity {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }

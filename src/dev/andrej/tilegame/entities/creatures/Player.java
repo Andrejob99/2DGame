@@ -2,6 +2,7 @@ package dev.andrej.tilegame.entities.creatures;
 
 import dev.andrej.tilegame.Game;
 import dev.andrej.tilegame.Handler;
+import dev.andrej.tilegame.entities.Entity;
 import dev.andrej.tilegame.gfx.Animation;
 import dev.andrej.tilegame.gfx.Assets;
 import dev.andrej.tilegame.tiles.Tile;
@@ -18,6 +19,10 @@ public class Player extends Creature {
     private int animationPriority;
     private int priorityCounter;
     private boolean fast;
+
+    //Attack
+    private long lastAttackTime = System.currentTimeMillis();
+    private long attackCooldown = 500;
 
     private float speedMultiplier;
 
@@ -47,9 +52,52 @@ public class Player extends Creature {
     public void tick() {
         directions[animationIndex].tick(fast);
 
+        //Movement
         getInput();
         move();
         handler.getGameCamera().centerOnEntity(this);
+        //Attack
+        checkAttacks();
+    }
+
+    private void checkAttacks() {
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime - lastAttackTime < attackCooldown) {
+            return;
+        }
+
+        Rectangle playerBox = getCollisionBounds(0,0);
+        Rectangle attackBox = new Rectangle();
+        int attackSize = 20;
+        attackBox.width = attackSize;
+        attackBox.height = attackSize;
+
+        if (handler.getKeyManager().up){
+            attackBox.x = playerBox.x + playerBox.width / 2 - attackSize / 2;
+            attackBox.y = playerBox.y - attackSize;
+        } else if (handler.getKeyManager().down) {
+            attackBox.x = playerBox.x + playerBox.width / 2 - attackSize / 2;
+            attackBox.y = playerBox.y + playerBox.height;
+        } else if (handler.getKeyManager().left) {
+            attackBox.x = playerBox.x - attackSize;
+            attackBox.y = playerBox.y + playerBox.height / 2 - attackSize / 2;
+        } else if (handler.getKeyManager().right) {
+            attackBox.x = playerBox.x + playerBox.width;
+            attackBox.y = playerBox.y + playerBox.height / 2 - attackSize / 2;
+        }
+
+        for(Entity e : handler.getWorld().getEntityManager().getEntities()) {
+            if(e.equals(this))
+                continue;
+            if(e.getCollisionBounds(0,0).intersects(attackBox)){
+                e.takeDamage(4);
+                lastAttackTime = currentTime;
+                System.out.println("Chop chop");
+                return;
+            }
+        }
+
     }
 
     private void getInput(){
@@ -57,7 +105,7 @@ public class Player extends Creature {
         yMove = 0;
 
         speedMultiplier = 1;
-        if(handler.getKeyManager().xKey){
+        if(handler.getKeyManager().shift){
             speedMultiplier = 3;
             fast = true;
         } else {
@@ -66,19 +114,19 @@ public class Player extends Creature {
 
         priorityCounter = 0;
 
-        if(handler.getKeyManager().up){
+        if(handler.getKeyManager().w){
             yMove = -speed * speedMultiplier;
             priorityCounter++;
         }
-        if(handler.getKeyManager().down){
+        if(handler.getKeyManager().s){
             yMove = speed * speedMultiplier;
             priorityCounter++;
         }
-        if(handler.getKeyManager().left){
+        if(handler.getKeyManager().a){
             xMove = -speed * speedMultiplier;
             priorityCounter++;
         }
-        if(handler.getKeyManager().right){
+        if(handler.getKeyManager().d){
             xMove = speed * speedMultiplier;
             priorityCounter++;
         }
@@ -153,6 +201,11 @@ public class Player extends Creature {
     @Override
     public void render(Graphics g) {
         g.drawImage(getCurrentAnimationFrame(), (int) (x - handler.getGameCamera().getxOffset()), (int) (y - handler.getGameCamera().getyOffset()), width * 2, height * 2, null);
+    }
+
+    @Override
+    public void die() {
+        System.out.println("You Died");
     }
 
     private BufferedImage getCurrentAnimationFrame(){
