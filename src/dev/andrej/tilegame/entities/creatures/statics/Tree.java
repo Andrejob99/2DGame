@@ -29,7 +29,7 @@ public class Tree extends StaticEntity {
 
     @Override
     public void die() {
-        handler.getWorld().getItemManager().addItem(Item.woodItem.createNew((int) (x + bounds.width/2.8), (int) (y + bounds.height*2.1)));
+        handler.getWorld().getItemManager().addItem(Item.woodItem.createNew((int) (x + bounds.width/2.8), (int) (y + bounds.height*2.3)));
     }
 
     @Override
