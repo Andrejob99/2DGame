@@ -4,6 +4,7 @@ import dev.andrej.tilegame.Handler;
 import dev.andrej.tilegame.entities.EntityManager;
 import dev.andrej.tilegame.entities.creatures.Player;
 import dev.andrej.tilegame.entities.creatures.statics.Tree;
+import dev.andrej.tilegame.items.ItemManager;
 import dev.andrej.tilegame.tiles.*;
 import dev.andrej.tilegame.utils.Utils;
 
@@ -23,10 +24,14 @@ public class World {
     private int[][] worldTiles;
     //Entities
     private EntityManager entityManager;
+    //Items
+    private ItemManager itemManager;
 
     public World(Handler handler, String path) {
         this.handler = handler;
         entityManager = new EntityManager(handler, new Player(handler, 0, 0));
+        itemManager = new ItemManager(handler);
+
         entityManager.addEntity(new Tree(handler, 100, 200));
         entityManager.addEntity(new Tree(handler, 100, 300));
         entityManager.addEntity(new Tree(handler, 100, 400));
@@ -59,6 +64,8 @@ public class World {
                         (int) (y * Tile.TILEHEIGHT - handler.getGameCamera().getyOffset()));
             }
         }
+        //Items
+        itemManager.render(g);
         //Entity render loop
         entityManager.render(g);
     }
@@ -90,6 +97,24 @@ public class World {
                 worldTiles[x][y] = Utils.parseInt(tokens[4 + x + y * width]);
             }
         }
+    }
+
+    // Getters and Setters
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    public void setHandler(Handler handler) {
+        this.handler = handler;
+    }
+
+    public ItemManager getItemManager() {
+        return itemManager;
+    }
+
+    public void setItemManager(ItemManager itemManager) {
+        this.itemManager = itemManager;
     }
 
     public int getSpawnX(){

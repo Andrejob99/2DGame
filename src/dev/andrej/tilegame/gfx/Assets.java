@@ -69,7 +69,7 @@ public class Assets {
         cross = sheet.crop(tileWidth, tileHeight * 2, tileWidth, tileHeight);
 
         //Drops
-        wood = sheet.crop(tileWidth, tileHeight * 3, tileWidth, tileHeight);
+        wood = sheet.crop(0, tileHeight * 3, tileWidth, tileHeight);
         pebble = sheet.crop(tileWidth, tileHeight * 3, tileWidth * 2, tileHeight);
     }
 }
