@@ -8,6 +8,7 @@ import dev.andrej.tilegame.gfx.Assets;
 import dev.andrej.tilegame.gfx.GameCamera;
 import dev.andrej.tilegame.input.KeyManager;
 import dev.andrej.tilegame.input.MouseManager;
+import dev.andrej.tilegame.sounds.AudioManager;
 import dev.andrej.tilegame.states.GameState;
 import dev.andrej.tilegame.states.MenuState;
 import dev.andrej.tilegame.states.State;

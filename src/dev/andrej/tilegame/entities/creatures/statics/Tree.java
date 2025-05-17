@@ -3,6 +3,7 @@ package dev.andrej.tilegame.entities.creatures.statics;
 import dev.andrej.tilegame.Handler;
 import dev.andrej.tilegame.gfx.Assets;
 import dev.andrej.tilegame.items.Item;
+import dev.andrej.tilegame.sounds.AudioManager;
 import dev.andrej.tilegame.tiles.Tile;
 
 import java.awt.*;
@@ -29,6 +30,7 @@ public class Tree extends StaticEntity {
 
     @Override
     public void die() {
+        AudioManager.getInstance().playSound(AudioManager.TREE_CHOPPED);
         handler.getWorld().getItemManager().addItem(Item.woodItem.createNew((int) (x + bounds.width/2.8), (int) (y + bounds.height*2.1)));
     }
 

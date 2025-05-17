@@ -5,6 +5,7 @@ import dev.andrej.tilegame.Handler;
 import dev.andrej.tilegame.entities.Entity;
 import dev.andrej.tilegame.gfx.Animation;
 import dev.andrej.tilegame.gfx.Assets;
+import dev.andrej.tilegame.sounds.AudioManager;
 import dev.andrej.tilegame.tiles.Tile;
 
 import java.awt.*;
@@ -94,6 +95,7 @@ public class Player extends Creature {
                 e.takeDamage(4);
                 lastAttackTime = currentTime;
                 System.out.println("Chop chop");
+                AudioManager.getInstance().playSound(AudioManager.TREE_HIT);
                 return;
             }
         }
